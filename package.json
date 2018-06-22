@@ -28,6 +28,8 @@
   },
   "homepage": "https://github.com/igorracki/nodejs-chat-application#readme",
   "dependencies": {
-    "express": "^4.16.3"
+    "express": "^4.16.3",
+    "moment": "^2.22.2",
+    "socket.io": "^2.1.1"
   }
 }

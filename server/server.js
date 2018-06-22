@@ -1,18 +1,69 @@
 const path = require('path');
+const http = require('http');
 const express = require('express');
+const socketIO = require('socket.io');
+
+const {generateMessage, generateLocationMessage} = require('./utils/message');
+const {isRealString} = require('./utils/validation');
+const {Users} = require('./utils/users');
 
 const publicPath = path.join(__dirname, '../public');
 const port = process.env.PORT || 3000;
 var app = express();
+var server = http.createServer(app);
+var io = socketIO(server);
+var users = new Users();
+
+var room = 'global';
 
 app.use(express.static(publicPath));
-app.use((request, response, next) => {
-    var now = new Date().toString();
-    var log = '\x1b[1m \x1b[35m' + now + ': \x1b[33m' + request.method + ' \x1b[34m' + request.url + ' ' + ' \x1b[32m' + response.statusCode;
-    console.log(log);
-    next();
+
+io.on('connection', (socket) => {
+  console.log('New user connected');
+
+  socket.on('join', (params, callback) => {
+    if (!isRealString(params.name) || !isRealString(room)) {
+      return callback('Username is required!');
+    }
+
+    socket.join(room);
+    users.removeUser(socket.id);
+    users.addUser(socket.id, params.name, room);
+
+    io.to(room).emit('updateUserList', users.getUserList(room));
+    socket.emit('newServiceMessage', generateMessage('Chat Service', 'Welcome to the chat room!'));
+    socket.broadcast.to(room).emit('newMessage', generateMessage('Chat Service', `${params.name} has joined.`));
+    callback();
+  });
+
+  socket.on('createMessage', (message, callback) => {
+    var user = users.getUser(socket.id);
+
+    if (user && isRealString(message.text)) {
+      io.to(user.room).emit('newMessage', generateMessage(user.name, message.text));
+    }
+
+    callback();
+  });
+
+  socket.on('createLocationMessage', (coords) => {
+    var user = users.getUser(socket.id);
+
+    if (user) {
+      io.to(user.room).emit('newLocationMessage', generateLocationMessage(user.name, coords.latitude, coords.longitude));
+    }
+  });
+
+  socket.on('disconnect', () => {
+    var user = users.removeUser(socket.id);
+
+    if (user) {
+      io.to(user.room).emit('updateUserList', users.getUserList(user.room));
+      io.to(user.room).emit('newServiceMessage', generateMessage('Chat Service', `${user.name} has left.`));
+    }
+  });
 });
 
-app.listen(port, () => {
-    console.log(`Server is up on port ${port}.`);
-})
+server.listen(port, () => {
+  console.log(`Server is up on ${port}`);
+});
