@@ -32,7 +32,7 @@ io.on('connection', (socket) => {
 
     io.to(room).emit('updateUserList', users.getUserList(room));
     socket.emit('newServiceMessage', generateMessage('Chat Service', 'Welcome to the chat room!'));
-    socket.broadcast.to(room).emit('newMessage', generateMessage('Chat Service', `${params.name} has joined.`));
+    socket.broadcast.to(room).emit('newServiceMessage', generateMessage('Chat Service', `${params.name} has joined.`));
     callback();
   });
 
