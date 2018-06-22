@@ -30,12 +30,12 @@
   </div>
 
   <script id="message-template" type="text/template">
-      <div class="message">
+      <div class="message" style="border: 2px solid {{color}};background-color: #f1f1f1;border-radius: 15px;padding: 10px 1% 2% 1%;margin: 10px 1% 1% 10px;">
       <img src="/images/user.png" alt="Avatar" class="right" style="width:10%;height:10%;">
       <div class="message__body">
         <p>{{text}}</p>
       </div>
-      <span class="info">{{from}} <i>{{createdAt}}</i></span>
+      <span class="info"><span style="color:{{color}}">{{from}} <i>{{createdAt}}</i></span></span>
     </div>
   </script>
 
@@ -67,6 +67,12 @@
   <script src="/js/libs/mustache.js"></script>
   <script src="/js/libs/deparam.js"></script>
   <script src="/js/chat.js"></script>
+  <script>
+      window.setInterval(function() {
+        var elem = document.getElementById('messages');
+        elem.scrollTop = elem.scrollHeight;
+      }, 100);
+  </script>
 </body>
 
 </html>
