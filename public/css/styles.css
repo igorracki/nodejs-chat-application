@@ -36,8 +36,11 @@
    margin: 10px 1% 1% 50%;
 } */
 .message {
+  border: 2px solid #3D1255;
+  background-color: #f1f1f1;
+  border-radius: 15px;
   padding: 10px 1% 2% 1%;
-  margin: 10px 1% 1% 50%;
+  margin: 10px 1% 1% 10px;
 }
 
 .message:nth-child(odd) img{
@@ -57,7 +60,7 @@
     border-radius: 50%;
 }
 
-.message:nth-child(odd) .info {
+/* .message:nth-child(odd) .info {
   float: right;
   font-weight: bold;
 }
@@ -65,7 +68,7 @@
 .message:nth-child(even) .info {
   float: left;
   font-weight: bold;
-}
+} */
 
 .serviceMessage {
   border: 2px solid #ff9900;
