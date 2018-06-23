@@ -46,7 +46,8 @@ body {
     background-color: #ffcc99;
     border-radius: 15px;
     text-align: center;
-    margin: 1%;
+    margin: 1% auto;
+    width: 350px;
     padding: 0.5%;
 }
 
